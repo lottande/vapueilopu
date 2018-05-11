@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118023424-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+
+        function gtag() {
+            dataLayer.push(arguments);
+        }
+        gtag('js', new Date());
+
+        gtag('config', 'UA-118023424-1');
+    </script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vapputapahtumien tyytväisyyskysely</title>
+    <meta name="description" content="An interactive getting started guide for Brackets.">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <link href="https://fonts.googleapis.com/css?family=Arvo" rel="stylesheet">
+
+
+</head>
+
+<body>
+
+
+    <style>
+        h2 {
+            color: white;
+            font-size: 6em;
+            font-family: 'Arvo', serif;
+        }
+        
+        p {
+            font-size: 1.5em;
+            color: black;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 3em;
+            color: black;
+            text-align: center;
+        }
+        
+        body {
+            background-image: url(2.jpg);
+            background-repeat: no-repeat;
+            background-size: cover;
+            background-attachment: fixed;
+            background-position: center;
+            font-style: normal;
+            font-size: 15px;
+            text-align: center;
+        }
+        
+        button {
+            font-size: 2.5em;
+        }
+        
+        #container {
+            width: 60%;
+            max-width: 1000px;
+            margin: auto;
+            background-color: rgba(246, 240, 247, 0.94);
+        }
+    </style>
+    <div id="container">
+        <h1>Helgan 8 päivän Vappu</h1>
+
+        <p>Vapputapahtumien tyytyväisyyskysely</p>
+
+
+        <div id="lomake">
+
+
+        </div>
+        <button onclick="laheta()">Lähetä</button>
+    </div>
+
+    <script>
+        var lomakekentta = [];
+        $.getJSON("http://www.mocky.io/v2/5aead9823000005300575276", function (data) {
+            var items = [];
+
+            $.each(data, function (key, d) {
+                lomakekentta.push(d.id);
+
+                if (d.tyyppi == "number") {
+                    items.push(d.kysymys + "<br>");
+
+                    items.push("<input type=" + d.tyyppi + " id=" + d.id + "> <br>");
+
+                }
+                if (d.tyyppi == "interger") {
+                    items.push(d.kysymys + "<br>");
+
+                    items.push("<input type=" + d.tyyppi + " id=" + d.id + "> <br>");
+
+                }
+
+                if (d.tyyppi == "radio") {
+
+                    items.push("<br>" + d.kysymys + "<br>");
+
+                    for (i = 0; i < d.value.length; i++) {
+                        items.push("<input type=" + d.tyyppi + " id=" + d.id + " name=" + d.id + " value=" + d.value[i] + ">" + d.value[i] + "<br>");
+
+                    }
+
+                }
+
+                if (d.tyyppi == "checkbox") {
+
+                    items.push("<br>" + d.kysymys + "<br>");
+
+                    for (i = 0; i < d.value.length; i++) {
+                        items.push("<input type=" + d.tyyppi + " id=" + d.id + " name=" + d.id + " value=" + d.value[i] + ">" + d.value[i] + "<br>");
+
+                    }
+
+                }
+
+                if (d.tyyppi == "textarea") {
+                    items.push(d.kysymys + "<br>");
+
+                    items.push("<input type=" + d.tyyppi + " id=" + d.id + "> <br>");
+
+                }
+
+                if (d.tyyppi == "text") {
+                    items.push(d.kysymys + "<br>");
+
+                    items.push("<input type=" + d.tyyppi + " id=" + d.id + "> <br>");
+
+                }
+            });
+
+
+
+
+            $("<div/>", {
+                html: items.join("")
+            }).appendTo("#lomake");
+
+
+
+        });
+
+
+        function laheta() {
+            var lahetys = [];
+            var vastaus = "";
+            for (i = 0; i < lomakekentta.length; i++) {
+
+                tyyppi = document.getElementById(lomakekentta[i]).type;
+
+                if (tyyppi == "textarea") {
+                    vastaus = document.getElementById(lomakekentta[i]).value;
+                }
+
+                if (tyyppi == "radio") {
+                    var radios = document.getElementsByName(lomakekentta[i]);
+                    for (var x = 0, length = radios.length; x < length; x++) {
+                        if (radios[x].checked) {
+                            vastaus = radios[x].value;
+                        }
+                    }
+                }
+                if (tyyppi == "number") {
+                    var numbers = document.getElementsByName(lomakekentta[i]);
+                    for (var x = 0, length = numbers.length; x < length; x++) {
+                        if (numbers[x].checked) {
+                            vastaus = numbers[x].value;
+                        }
+                    }
+                }
+                if (tyyppi == "text") {
+                    vastaus = document.getElementById(lomakekentta[i]).value;
+                }
+
+                if (tyyppi == "checkbox") {
+
+                    var checkboxs = document.getElementsByName(lomakekentta[i]);
+                    for (var x = 0, length = checkboxs.length; x < length; x++) {
+                        if (checkboxs[x].checked) {
+                            vastaus = checkboxs[x].value;
+                        }
+                    }
+                }
+                lahetys.push("{ 'id' : '" + lomakekentta[i] + "','vastaus':'" + vastaus + "'},");
+
+
+            }
+            jsonData = lahetys.join("");
+            alert(jsonData);
+        };
+    </script>
+
+
+
+</body>
+
+</html>
